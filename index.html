@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sog‘liqPlus | Shifokor topish oson</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 0.5rem;
+            max-width: 32rem;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            background: #e5ded8;
+        }
+        .chat-header {
+            background: #075e54;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #e5ded8;
+        }
+        .message {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            margin-bottom: 2px;
+        }
+        .message.sent {
+            align-self: flex-end;
+        }
+        .message.received {
+            align-self: flex-start;
+        }
+        .bubble {
+            padding: 8px 12px;
+            border-radius: 7px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        .sent .bubble {
+            background: #dcf8c6;
+            border-top-right-radius: 0;
+        }
+        .received .bubble {
+            background: white;
+            border-top-left-radius: 0;
+        }
+        .timestamp {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 2px;
+            align-self: flex-end;
+        }
+        .chat-footer {
+            background: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .chat-footer input {
+            flex: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 15px;
+            outline: none;
+        }
+        .chat-footer button {
+            background: #075e54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .chat-footer button:hover {
+            background: #054c44;
+        }
+        .avatar-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .reel-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .reel-card:hover {
+            transform: scale(1.02);
+        }
+        .reel-thumbnail {
+            height: 300px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <h1 class="text-xl font-bold text-blue-600 cursor-pointer" id="logo">Sog‘liqPlus</h1>
+                <div class="flex space-x-4">
+                    <button class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-100 transition" data-section="doctors">Shifokorlar</button>
+                    <button class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-100 transition" data-section="clinics">Klinikalar</button>
+                    <button class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-100 transition" data-section="nearby">Eng yaqin shifoxona</button>
+                    <button class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-100 transition" data-section="drugs">Dorilar</button>
+                    <button class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-100 transition" data-section="reels">Reels</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Asosiy kontent -->
+    <main id="content" class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Dinamik bo‘limlar -->
+    </main>
+
+    <!-- WhatsApp uslubidagi chat modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content p-0 flex flex-col" style="max-width: 400px;">
+            <div class="chat-header">
+                <img id="chatAvatar" class="avatar-img" src="" alt="Doctor avatar" style="display: none;">
+                <div id="chatAvatarPlaceholder" class="avatar-img bg-green-600 flex items-center justify-center text-white font-bold">👨‍⚕️</div>
+                <div>
+                    <h3 id="chatDoctorName" class="font-semibold">Shifokor</h3>
+                    <p class="text-xs text-green-200">online</p>
+                </div>
+                <button class="ml-auto text-white text-xl" onclick="closeModal('chatModal')">&times;</button>
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                <!-- Xabarlar dinamik qo‘shiladi -->
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Xabar yozing...">
+                <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Klinika tafsilotlari modal -->
+    <div id="clinicModal" class="modal">
+        <div class="modal-content p-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 id="clinicName" class="text-2xl font-bold text-gray-800"></h2>
+                <button class="text-gray-500 hover:text-gray-700 text-xl" onclick="closeModal('clinicModal')">&times;</button>
+            </div>
+            <div id="clinicDetails" class="space-y-3">
+                <!-- Ma’lumotlar JS orqali to‘ldiriladi -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---------- MA'LUMOTLAR (mock) ----------
+        const specialties = [
+            { id: 1, name: 'LOR' },
+            { id: 2, name: 'Kardiolog' },
+            { id: 3, name: 'Nevrolog' },
+            { id: 4, name: 'Pediatr' },
+            { id: 5, name: 'Ortoped' },
+            { id: 6, name: 'Ginekolog' },
+            { id: 7, name: 'Dermatolog' },
+            { id: 8, name: 'Oftalmolog' },
+        ];
+
+        // Shifokorlar sonini ko‘paytiramiz va rasm qo‘shamiz
+        const doctors = [
+            { id: 1, name: 'Dr. Aliyev Ali', specialtyId: 1, experience: 10, clinic: 'Shifo Klinikasi', phone: '+998901234567', image: 'https://randomuser.me/api/portraits/men/1.jpg' },
+            { id: 2, name: 'Dr. Karimova Malika', specialtyId: 2, experience: 8, clinic: 'MedEx Klinikasi', phone: '+998901234568', image: 'https://randomuser.me/api/portraits/women/1.jpg' },
+            { id: 3, name: 'Dr. Jalilov Bobur', specialtyId: 3, experience: 12, clinic: 'NeyroMed', phone: '+998901234569', image: 'https://randomuser.me/api/portraits/men/2.jpg' },
+            { id: 4, name: 'Dr. Ismoilova Sabina', specialtyId: 4, experience: 5, clinic: 'Shifo Klinikasi', phone: '+998901234570', image: 'https://randomuser.me/api/portraits/women/2.jpg' },
+            { id: 5, name: 'Dr. Toirova Nilufar', specialtyId: 5, experience: 7, clinic: 'Ortopediya Markazi', phone: '+998901234571', image: 'https://randomuser.me/api/portraits/women/3.jpg' },
+            { id: 6, name: 'Dr. Azizova Lola', specialtyId: 6, experience: 9, clinic: 'Ayol Salomatligi', phone: '+998901234572', image: 'https://randomuser.me/api/portraits/women/4.jpg' },
+            { id: 7, name: 'Dr. Salimov Sherzod', specialtyId: 1, experience: 6, clinic: 'MedEx Klinikasi', phone: '+998901234573', image: 'https://randomuser.me/api/portraits/men/3.jpg' },
+            { id: 8, name: 'Dr. Rahimova Nodira', specialtyId: 2, experience: 11, clinic: 'Shifo Klinikasi', phone: '+998901234574', image: 'https://randomuser.me/api/portraits/women/5.jpg' },
+            { id: 9, name: 'Dr. Qodirov Jahongir', specialtyId: 3, experience: 4, clinic: 'NeyroMed', phone: '+998901234575', image: 'https://randomuser.me/api/portraits/men/4.jpg' },
+            { id: 10, name: 'Dr. Sobirova Dilnoza', specialtyId: 4, experience: 8, clinic: 'Ayol Salomatligi', phone: '+998901234576', image: 'https://randomuser.me/api/portraits/women/6.jpg' },
+            { id: 11, name: 'Dr. Tursunov Botir', specialtyId: 5, experience: 15, clinic: 'Ortopediya Markazi', phone: '+998901234577', image: 'https://randomuser.me/api/portraits/men/5.jpg' },
+            { id: 12, name: 'Dr. Xolmatova Zarina', specialtyId: 6, experience: 6, clinic: 'MedEx Klinikasi', phone: '+998901234578', image: 'https://randomuser.me/api/portraits/women/7.jpg' },
+            { id: 13, name: 'Dr. Nurmatov Elyor', specialtyId: 7, experience: 9, clinic: 'Dermatologiya Klinikasi', phone: '+998901234579', image: 'https://randomuser.me/api/portraits/men/6.jpg' },
+            { id: 14, name: 'Dr. Abdurahimova Zulfiya', specialtyId: 7, experience: 7, clinic: 'Shifo Klinikasi', phone: '+998901234580', image: 'https://randomuser.me/api/portraits/women/8.jpg' },
+            { id: 15, name: 'Dr. Hamidov Akmal', specialtyId: 8, experience: 13, clinic: 'Ko‘z Klinikasi', phone: '+998901234581', image: 'https://randomuser.me/api/portraits/men/7.jpg' },
+            { id: 16, name: 'Dr. Yo‘ldosheva Gulnora', specialtyId: 8, experience: 10, clinic: 'MedEx Klinikasi', phone: '+998901234582', image: 'https://randomuser.me/api/portraits/women/9.jpg' },
+        ];
+
+        const clinics = [
+            { id: 1, name: 'Shifo Klinikasi', address: 'Toshkent, Chilonzor 9', phone: '+998781234567', workHours: '09:00 - 20:00', services: ['LOR', 'Kardiologiya', 'Pediatriya'] },
+            { id: 2, name: 'MedEx Klinikasi', address: 'Toshkent, Yunusobod 14', phone: '+998781234568', workHours: '08:00 - 22:00', services: ['Kardiologiya', 'Nevrologiya', 'Ortopediya'] },
+            { id: 3, name: 'NeyroMed', address: 'Toshkent, Mirzo Ulug‘bek', phone: '+998781234569', workHours: '09:00 - 18:00', services: ['Nevrologiya', 'Psixiatriya'] },
+            { id: 4, name: 'Ayol Salomatligi', address: 'Toshkent, Chilonzor 5', phone: '+998781234570', workHours: '09:00 - 19:00', services: ['Ginekologiya', 'Pediatriya'] },
+            { id: 5, name: 'Dermatologiya Klinikasi', address: 'Toshkent, Yakkasaroy', phone: '+998781234571', workHours: '10:00 - 19:00', services: ['Dermatologiya', 'Kosmetologiya'] },
+            { id: 6, name: 'Ko‘z Klinikasi', address: 'Toshkent, Mirzo Ulug‘bek', phone: '+998781234572', workHours: '09:00 - 18:00', services: ['Oftalmologiya'] },
+        ];
+
+        const nearbyHospitals = [
+            { id: 1, name: 'Shoshilinch Tibbiy Yordam Klinikasi', address: 'Toshkent, Farobiy 2', distance: 0.8, phone: '+998781234571', doctors: ['Dr. Aliyev Ali', 'Dr. Karimova Malika'], services: ['LOR', 'Kardiologiya', 'Nevrologiya', 'Travmatologiya'] },
+            { id: 2, name: 'Vodorod Klinikasi', address: 'Toshkent, Amir Temur 45', distance: 1.2, phone: '+998781234572', doctors: ['Dr. Jalilov Bobur', 'Dr. Ismoilova Sabina'], services: ['Nevrologiya', 'Pediatriya', 'Terapiya'] },
+            { id: 3, name: 'Toshkent shahar 1-sonli kasalxonasi', address: 'Toshkent, Navoiy 10', distance: 2.5, phone: '+998781234573', doctors: ['Dr. Toirova Nilufar', 'Dr. Azizova Lola'], services: ['Ortopediya', 'Ginekologiya', 'Xirurgiya'] },
+        ];
+
+        const drugs = [
+            { id: 1, name: 'Paratsetamol', usage: 'Isitma, og‘riq', description: 'Analgetik va antipiretik', price: '5 000 so‘m' },
+            { id: 2, name: 'Amoksitsillin', usage: 'Bakterial infeksiyalar', description: 'Antibiotik', price: '15 000 so‘m' },
+            { id: 3, name: 'Loratadin', usage: 'Allergiya', description: 'Antigistamin', price: '8 000 so‘m' },
+            { id: 4, name: 'Ibuprofen', usage: 'Og‘riq qoldiruvchi, yallig‘lanish', description: 'Nosteroid yallig‘lanishga qarshi', price: '7 000 so‘m' },
+            { id: 5, name: 'Omeprazol', usage: 'Oshqozon yonishi', description: 'Proton nasos ingibitori', price: '12 000 so‘m' },
+            { id: 6, name: 'Vitamin D3', usage: 'Suyaklar mustahkamlash', description: 'Kalsiy bilan birga', price: '25 000 so‘m' },
+        ];
+
+        const reels = [
+            { id: 1, title: 'LOR kasalliklari', views: '12K', thumbnail: '🎥', doctor: 'Dr. Aliyev' },
+            { id: 2, title: 'Yurak sog‘ligi', views: '8.5K', thumbnail: '❤️', doctor: 'Dr. Karimova' },
+            { id: 3, title: 'Nevrologiya maslahatlari', views: '5K', thumbnail: '🧠', doctor: 'Dr. Jalilov' },
+            { id: 4, title: 'Bolalar salomatligi', views: '15K', thumbnail: '👶', doctor: 'Dr. Ismoilova' },
+            { id: 5, title: 'Ortopediya sirlari', views: '3.2K', thumbnail: '🦴', doctor: 'Dr. Toirova' },
+            { id: 6, title: 'Ginekologiya', views: '20K', thumbnail: '🌸', doctor: 'Dr. Azizova' },
+            { id: 7, title: 'Dermatologiya', views: '7K', thumbnail: '🧴', doctor: 'Dr. Nurmatov' },
+            { id: 8, title: 'Ko‘z salomatligi', views: '9K', thumbnail: '👁️', doctor: 'Dr. Hamidov' },
+        ];
+
+        // ---------- GLOBAL O'ZGARUVCHILAR ----------
+        let currentSpecialty = null;
+        let currentDoctorForChat = null;
+        let chatMessages = [];
+
+        // ---------- MODAL BOSHQARISH ----------
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            if (modalId === 'chatModal') {
+                currentDoctorForChat = null;
+                chatMessages = [];
+            }
+        };
+
+        // ---------- NAVIGATION ----------
+        document.querySelectorAll('.nav-link').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const section = e.target.dataset.section;
+                renderSection(section);
+                document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+                e.target.classList.add('bg-blue-500', 'text-white');
+            });
+        });
+
+        document.getElementById('logo').addEventListener('click', () => {
+            renderSection('doctors');
+            document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+            document.querySelector('[data-section="doctors"]').classList.add('bg-blue-500', 'text-white');
+        });
+
+        // Boshlang'ich bo'lim
+        renderSection('doctors');
+
+        // ---------- BO'LIMLARNI RENDER QILISH ----------
+        function renderSection(section) {
+            const content = document.getElementById('content');
+            if (section === 'doctors') {
+                content.innerHTML = renderDoctors();
+                attachDoctorsEvents();
+            } else if (section === 'clinics') {
+                content.innerHTML = renderClinics();
+                attachClinicsEvents();
+            } else if (section === 'nearby') {
+                content.innerHTML = renderNearby();
+                attachNearbyEvents();
+            } else if (section === 'drugs') {
+                content.innerHTML = renderDrugs();
+            } else if (section === 'reels') {
+                content.innerHTML = renderReels();
+            }
+        }
+
+        // ---------- SHIFOKORLAR (rasm qo‘shilgan) ----------
+        function renderDoctors() {
+            let html = `
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Shifokorlar</h1>
+                <div class="grid md:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-lg shadow p-4 h-fit sticky top-20">
+                        <h2 class="text-xl font-semibold mb-4">Yo‘nalishlar</h2>
+                        <ul class="space-y-2" id="specialtiesList">
+            `;
+            specialties.forEach(spec => {
+                html += `<li><button class="specialty-btn w-full text-left px-3 py-2 rounded-lg transition-colors hover:bg-blue-50 text-gray-700" data-id="${spec.id}">${spec.name}</button></li>`;
+            });
+            html += `</ul></div><div class="md:col-span-3" id="doctorsList">`;
+            if (currentSpecialty) {
+                html += renderDoctorsBySpecialty(currentSpecialty);
+            } else {
+                html += `<div class="bg-white rounded-lg shadow p-8 text-center"><p class="text-gray-500 text-lg">Iltimos, yo‘nalish tanlang</p></div>`;
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        function renderDoctorsBySpecialty(specId) {
+            const filtered = doctors.filter(d => d.specialtyId === specId);
+            const specName = specialties.find(s => s.id === specId)?.name || '';
+            if (filtered.length === 0) {
+                return `<h2 class="text-2xl font-semibold mb-4">${specName} shifokorlari</h2><p class="text-gray-500">Bu yo‘nalishda hozircha shifokor yo‘q</p>`;
+            }
+            let html = `<h2 class="text-2xl font-semibold mb-4">${specName} shifokorlari</h2>`;
+            html += `<div class="grid sm:grid-cols-2 gap-4">`;
+            filtered.forEach(doc => {
+                html += `
+                    <div class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="${doc.image}" alt="${doc.name}" class="w-16 h-16 rounded-full object-cover border-2 border-blue-200">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-800">${doc.name}</h3>
+                                <p class="text-gray-600">${doc.experience} yil tajriba</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600">Klinika: ${doc.clinic}</p>
+                        <p class="text-gray-600">Telefon: ${doc.phone}</p>
+                        <button class="chat-btn mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition w-full" data-doctor='${JSON.stringify(doc)}'>Chat</button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function attachDoctorsEvents() {
+            document.querySelectorAll('.specialty-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const specId = parseInt(e.target.dataset.id);
+                    currentSpecialty = specId;
+                    document.querySelectorAll('.specialty-btn').forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+                    e.target.classList.add('bg-blue-500', 'text-white');
+                    document.getElementById('doctorsList').innerHTML = renderDoctorsBySpecialty(specId);
+                    attachChatButtons();
+                });
+            });
+            attachChatButtons();
+        }
+
+        function attachChatButtons() {
+            document.querySelectorAll('.chat-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const doctor = JSON.parse(e.target.dataset.doctor);
+                    openChatModal(doctor);
+                });
+            });
+        }
+
+        // ---------- WHATSAPP USLUBIDAGI CHAT (rasm bilan) ----------
+        function openChatModal(doctor) {
+            currentDoctorForChat = doctor;
+            document.getElementById('chatDoctorName').innerText = doctor.name;
+            // Rasmni ko‘rsatish
+            const chatAvatar = document.getElementById('chatAvatar');
+            const placeholder = document.getElementById('chatAvatarPlaceholder');
+            if (doctor.image) {
+                chatAvatar.src = doctor.image;
+                chatAvatar.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                chatAvatar.style.display = 'none';
+                placeholder.style.display = 'flex';
+                placeholder.innerText = doctor.name.charAt(0); // Agar rasm bo‘lmasa, bosh harf
+            }
+            document.getElementById('chatMessages').innerHTML = ''; // tozalash
+            chatMessages = [];
+            document.getElementById('chatModal').classList.add('active');
+        }
+
+        window.sendMessage = function() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text || !currentDoctorForChat) return;
+
+            addMessage(text, 'sent');
+            input.value = '';
+
+            setTimeout(() => {
+                addMessage('Salom! Savolingizni qabul qildim. Tez orada javob beraman.', 'received');
+            }, 800);
+        };
+
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerText = text;
+
+            const timestamp = document.createElement('span');
+            timestamp.className = 'timestamp';
+            const now = new Date();
+            timestamp.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            messageDiv.appendChild(bubble);
+            messageDiv.appendChild(timestamp);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            chatMessages.push({ text, type, time: timestamp.innerText });
+        }
+
+        // ---------- KLINIKALAR (o‘zgarishsiz) ----------
+        function renderClinics() {
+            let html = `<h1 class="text-3xl font-bold text-gray-800 mb-6">Klinikalar</h1>`;
+            html += `<div class="grid md:grid-cols-2 gap-6">`;
+            clinics.forEach(clinic => {
+                html += `
+                    <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition cursor-pointer clinic-card" data-clinic='${JSON.stringify(clinic)}'>
+                        <h2 class="text-2xl font-semibold text-gray-800">${clinic.name}</h2>
+                        <p class="text-gray-600 mt-2"><span class="font-medium">Manzil:</span> ${clinic.address}</p>
+                        <p class="text-gray-600"><span class="font-medium">Telefon:</span> ${clinic.phone}</p>
+                        <p class="text-gray-600"><span class="font-medium">Ish vaqti:</span> ${clinic.workHours}</p>
+                        <div class="mt-3">
+                            <span class="font-medium">Xizmatlar:</span>
+                            <div class="flex flex-wrap gap-1 mt-1">${clinic.services.map(s => `<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">${s}</span>`).join('')}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function attachClinicsEvents() {
+            document.querySelectorAll('.clinic-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const clinic = JSON.parse(card.dataset.clinic);
+                    openClinicModal(clinic);
+                });
+            });
+        }
+
+        function openClinicModal(clinic) {
+            document.getElementById('clinicName').innerText = clinic.name;
+            const detailsDiv = document.getElementById('clinicDetails');
+            detailsDiv.innerHTML = `
+                <p><span class="font-semibold">Manzil:</span> ${clinic.address}</p>
+                <p><span class="font-semibold">Telefon:</span> ${clinic.phone}</p>
+                <p><span class="font-semibold">Ish vaqti:</span> ${clinic.workHours}</p>
+                <div>
+                    <span class="font-semibold">Xizmatlar:</span>
+                    <div class="flex flex-wrap gap-2 mt-2">${clinic.services.map(s => `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${s}</span>`).join('')}</div>
+                </div>
+            `;
+            document.getElementById('clinicModal').classList.add('active');
+        }
+
+        // ---------- ENG YAQIN SHIFOXONA (o‘zgarishsiz) ----------
+        function renderNearby() {
+            return `
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Eng yaqin shifoxona</h1>
+                <div class="bg-white rounded-lg shadow p-6 mb-8">
+                    <button id="getLocationBtn" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">Mening joylashuvimni aniqlash</button>
+                    <p id="locationStatus" class="mt-2 text-green-600"></p>
+                </div>
+                <div id="hospitalsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            `;
+        }
+
+        function attachNearbyEvents() {
+            document.getElementById('getLocationBtn').addEventListener('click', getLocation);
+        }
+
+        function getLocation() {
+            const status = document.getElementById('locationStatus');
+            status.innerText = 'Aniqlanmoqda...';
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        status.innerText = `Joylashuv aniqlandi: ${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+                        renderHospitalsList();
+                    },
+                    (error) => {
+                        status.innerText = 'Joylashuvni aniqlab bo‘lmadi: ' + error.message;
+                    }
+                );
+            } else {
+                status.innerText = "Brauzeringiz geolokatsiyani qo‘llab-quvvatlamaydi";
+            }
+        }
+
+        function renderHospitalsList() {
+            const container = document.getElementById('hospitalsList');
+            if (!container) return;
+            let html = '';
+            nearbyHospitals.forEach(h => {
+                html += `
+                    <div class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition">
+                        <h2 class="text-xl font-semibold text-gray-800">${h.name}</h2>
+                        <p class="text-gray-600 mt-1">Masofa: ${h.distance} km</p>
+                        <p class="text-gray-600">Manzil: ${h.address}</p>
+                        <p class="text-gray-600">Telefon: ${h.phone}</p>
+                        <details class="mt-3">
+                            <summary class="text-blue-600 cursor-pointer">Shifokorlar va xizmatlar</summary>
+                            <div class="mt-2 pl-2">
+                                <p class="font-medium">Shifokorlar:</p>
+                                <ul class="list-disc list-inside text-gray-700">${h.doctors.map(d => `<li>${d}</li>`).join('')}</ul>
+                                <p class="font-medium mt-2">Xizmatlar:</p>
+                                <div class="flex flex-wrap gap-1 mt-1">${h.services.map(s => `<span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">${s}</span>`).join('')}</div>
+                            </div>
+                        </details>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ---------- DORILAR (o‘zgarishsiz) ----------
+        function renderDrugs() {
+            let html = `<h1 class="text-3xl font-bold text-gray-800 mb-6">Dorilar</h1>`;
+            html += `<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">`;
+            drugs.forEach(d => {
+                html += `
+                    <div class="bg-white rounded-lg shadow p-5 hover:shadow-lg transition">
+                        <h2 class="text-xl font-semibold text-gray-800">${d.name}</h2>
+                        <p class="text-gray-600 mt-2"><span class="font-medium">Qo‘llanilishi:</span> ${d.usage}</p>
+                        <p class="text-gray-600"><span class="font-medium">Tavsif:</span> ${d.description}</p>
+                        <p class="text-gray-800 font-bold mt-3">Narxi: ${d.price}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        // ---------- REELS (o‘zgarishsiz) ----------
+        function renderReels() {
+            let html = `<h1 class="text-3xl font-bold text-gray-800 mb-6">Reels</h1>`;
+            html += `<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">`;
+            reels.forEach(reel => {
+                html += `
+                    <div class="reel-card">
+                        <div class="reel-thumbnail" style="background: linear-gradient(145deg, #1e3c72, #2a5298);">
+                            <span style="font-size: 4rem;">${reel.thumbnail}</span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg">${reel.title}</h3>
+                            <p class="text-gray-600 flex items-center gap-2 mt-1"><i class="fas fa-eye"></i> ${reel.views} ko‘rish</p>
+                            <p class="text-gray-700 mt-2"><i class="fas fa-user-md"></i> ${reel.doctor}</p>
+                            <button class="mt-3 text-blue-600 hover:underline" onclick="alert('Reel video ochiladi (demo)')">▶ Ko‘rish</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        // Modalni tashqariga bosib yopish
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        };
+    </script>
+</body>
+</html>
