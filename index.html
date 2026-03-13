@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediTop – shifoxona navbatlari</title>
+    <title>MediTop – to'liq platforma</title>
     <!-- Tailwind + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -29,7 +29,7 @@
         .hospital-card, .medicine-card, .reels-item {
             transition: all 0.2s;
         }
-        .hospital-card:hover {
+        .hospital-card:hover, .medicine-card:hover {
             transform: scale(1.02);
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.02);
         }
@@ -106,11 +106,10 @@
             </div>
         </section>
 
-        <!-- Navbat olish bo'limi (oldingi klinikalar o'rniga) -->
+        <!-- Navbat olish bo'limi -->
         <section id="navbat" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-clock text-teal-600 text-2xl"></i></span> Shifoxonalarda navbat olish</h2>
             
-            <!-- Filtrlash qismi -->
             <div class="bg-white/70 backdrop-blur-sm p-5 rounded-2xl shadow-lg border border-white/50 mb-6">
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2">
@@ -136,17 +135,15 @@
                 </div>
             </div>
             
-            <!-- Navbat kartalari -->
             <div id="queueHospitalsList" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
             
-            <!-- Navbatga yozilganlik haqida modal (simulyatsiya) -->
             <div id="queueSuccessToast" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-2xl shadow-lg hidden items-center gap-3 z-50">
                 <i class="fas fa-check-circle text-xl"></i>
                 <span id="toastMessage">Siz navbatga muvaffaqiyatli yozildingiz!</span>
             </div>
         </section>
 
-        <!-- Eng yaqin shifoxona -->
+        <!-- Eng yaqin shifoxona (to'g'irlangan) -->
         <section id="yaqin" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-map-marker-alt text-teal-600 text-2xl"></i></span> Eng yaqin shifoxonalar</h2>
             <div class="bg-white/70 backdrop-blur-sm p-5 rounded-2xl shadow-lg border border-white/50 mb-6 flex items-center gap-3">
@@ -157,13 +154,13 @@
             <div id="nearestHospitals" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
         </section>
 
-        <!-- Dorilar -->
+        <!-- Dorilar (to'g'irlangan) -->
         <section id="dorilar" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-pills text-teal-600 text-2xl"></i></span> Dorilar</h2>
             <div id="medicinesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
         </section>
 
-        <!-- Reels -->
+        <!-- Reels (to'g'irlangan) -->
         <section id="reels" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-film text-teal-600 text-2xl"></i></span> Reels</h2>
             <div class="flex flex-wrap gap-2 mb-6" id="reelsDirectionFilter"></div>
@@ -176,7 +173,7 @@
         <div id="modalContent" class="bg-white/95 backdrop-blur-md rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl border border-white/30"></div>
     </div>
 
-    <!-- CHAT MODAL TEMPLATE (avvalgidek) -->
+    <!-- CHAT MODAL TEMPLATE -->
     <template id="chatModalTemplate">
         <div class="flex flex-col h-[80vh] rounded-3xl overflow-hidden relative">
             <div class="flex items-center gap-3 p-4 border-b sticky top-0 bg-gradient-to-r from-teal-500 to-cyan-500 text-white z-10">
@@ -212,7 +209,6 @@
         </div>
     </template>
 
-    <!-- Qolgan templatlar -->
     <template id="clinicDetailTemplate">
         <div class="p-6 relative">
             <button class="absolute top-4 right-4 text-2xl closeModalBtn text-gray-500 hover:text-gray-800">&times;</button>
@@ -241,7 +237,7 @@
             // ---------- MOCK MA'LUMOTLAR ----------
             const directions = ["LOR","Kardiolog","Nevrolog","Pediatr","Ortoped","Ginekolog","Dermatolog","Oftalmolog","Endokrinolog","Urolog","Onkolog","Psixiatr","Stomatolog","Fizioterapevt","Nefrolog"];
 
-            const doctors = [ /* 30 ta shifokor (avvalgidek) */ 
+            const doctors = [ /* 30 ta shifokor */ 
                 { id:1, name:"Akmal Karimov", direction:"Kardiolog", exp:12, clinic:"Shifo Med", phone:"+99890 123-45-67", online:true, rating:4.8 },
                 { id:2, name:"Nodira Abdullayeva", direction:"Pediatr", exp:8, clinic:"Pediatriya markazi", phone:"+99891 234-56-78", online:false, rating:4.5 },
                 { id:3, name:"Jasur Tursunov", direction:"Nevrolog", exp:15, clinic:"Neyro klinik", phone:"+99893 345-67-89", online:true, rating:4.9 },
@@ -274,7 +270,7 @@
                 { id:30, name:"Saida Karimova", direction:"LOR", exp:5, clinic:"Ent clinic", phone:"+99891 323-34-45", online:true, rating:4.3 }
             ];
 
-            // NAVBAT UCHUN SHIFOXONALAR (queueHospitals)
+            // Navbat uchun shifoxonalar
             const queueHospitals = [
                 { 
                     id: 1, 
@@ -283,9 +279,9 @@
                     phone: "+99871 123-45-67", 
                     hours: "08:00-20:00", 
                     services: ["Kardiologiya", "Nevrologiya", "Terapiya"],
-                    queueLength: 12, // navbatdagi odamlar soni
-                    avgWaitTime: 45, // daqiqa
-                    queueStatus: "high", // high, medium, low
+                    queueLength: 12,
+                    avgWaitTime: 45,
+                    queueStatus: "high",
                     availableDirections: ["Kardiolog", "Nevrolog", "Terapevt"],
                     doctors: ["Akmal Karimov", "Jasur Tursunov"]
                 },
@@ -343,9 +339,35 @@
                 }
             ];
 
-            const medicines = [ /* avvalgidek */ ];
-            const reels = [ /* avvalgidek */ ];
-            const hospitals = [ /* eng yaqin uchun avvalgidek */ ];
+            // Dorilar (to'liq)
+            const medicines = [
+                { id: 1, name: "Paratsetamol", disease: "Isitma, bosh og'rig'i", desc: "Analgetik va antipiretik", price: "5000 so'm" },
+                { id: 2, name: "Amoksitsillin", disease: "Bakterial infeksiyalar", desc: "Antibiotik", price: "12000 so'm" },
+                { id: 3, name: "Loratadin", disease: "Allergiya", desc: "Antigistamin", price: "8000 so'm" },
+                { id: 4, name: "Ibuprofen", disease: "Revmatizm, og'riq", desc: "Yallig'lanishga qarshi", price: "7000 so'm" },
+                { id: 5, name: "Omeprazol", disease: "Oshqozon yarasi", desc: "Proton pompasi ingibitori", price: "15000 so'm" },
+                { id: 6, name: "Vitamin D3", disease: "Suyak mustahkamlash", desc: "Kalsiy bilan", price: "25000 so'm" },
+                { id: 7, name: "Analgin", disease: "Kuchli og'riq", desc: "Inyeksiya", price: "4000 so'm" }
+            ];
+
+            // Reels (to'liq)
+            const reels = [
+                { id: 1, cover: "https://picsum.photos/id/1015/300/500", name: "Akmal Karimov", title: "Yurak salomatligi", views: "12K", likes: 450, comments: 23, direction: "Kardiolog" },
+                { id: 2, cover: "https://picsum.photos/id/100/300/500", name: "Nodira Abdullayeva", title: "Bolalarda allergiya", views: "8K", likes: 210, comments: 12, direction: "Pediatr" },
+                { id: 3, cover: "https://picsum.photos/id/102/300/500", name: "Jasur Tursunov", title: "Bosh og'rig'i sabablari", views: "22K", likes: 800, comments: 40, direction: "Nevrolog" },
+                { id: 4, cover: "https://picsum.photos/id/104/300/500", name: "Gulnoza Rahimova", title: "Ayollar salomatligi", views: "15K", likes: 560, comments: 31, direction: "Ginekolog" },
+                { id: 5, cover: "https://picsum.photos/id/106/300/500", name: "Bobur Shodiyev", title: "Ortopediya maslahatlari", views: "9K", likes: 340, comments: 18, direction: "Ortoped" },
+                { id: 6, cover: "https://picsum.photos/id/108/300/500", name: "Dilnoza Xamrayeva", title: "Terini parvarishlash", views: "18K", likes: 720, comments: 44, direction: "Dermatolog" },
+            ];
+
+            // Eng yaqin shifoxonalar uchun (koordinatalar bilan)
+            const nearbyHospitals = [
+                { id: 1, name: "Respublika shifoxonasi", lat: 41.311, lon: 69.279, address: "Olmazor tumani", phone: "+99871 123-45-67", doctors: ["Akmal Karimov (Kardiolog)", "Dilnoza (Dermatolog)"], services: ["Kardiologiya", "Dermatologiya"] },
+                { id: 2, name: "Shahar shoshilinch", lat: 41.328, lon: 69.235, address: "Chilonzor 5", phone: "+99871 234-56-78", doctors: ["Bobur Shodiyev (Ortoped)", "Nodira (Pediatr)"], services: ["Ortopediya", "Pediatriya"] },
+                { id: 3, name: "Markaziy klinika", lat: 41.299, lon: 69.245, address: "Yakkasaroy", phone: "+99871 345-67-89", doctors: ["Jasur (Nevrolog)", "Malika (Oftalmolog)"], services: ["Nevrologiya", "Oftalmologiya"] },
+                { id: 4, name: "Zangiota tibbiyot", lat: 41.351, lon: 69.201, address: "Zangiota", phone: "+99871 456-78-90", doctors: ["Gulnoza (Ginekolog)"], services: ["Ginekologiya"] },
+                { id: 5, name: "Shifo Med Complex", lat: 41.338, lon: 69.288, address: "Mirzo Ulug'bek", phone: "+99871 567-89-01", doctors: ["Rustam Qodirov (Endokrinolog)", "Zulfiya (Urolog)"], services: ["Endokrinologiya", "Urologiya"] }
+            ];
 
             // ---------- GLOBAL O'ZGARUVCHILAR ----------
             let currentUserPos = { lat: 41.323, lon: 69.269 };
@@ -356,7 +378,7 @@
             let queueFilterDirection = 'barchasi';
 
             // ---------- RENDER FUNKSIYALARI ----------
-            function renderDirections() { /* avvalgidek */ 
+            function renderDirections() {
                 const container = document.getElementById('directionList');
                 container.innerHTML = directions.map(dir => 
                     `<button class="direction-btn px-4 py-2.5 rounded-xl text-left transition-all duration-200 ${dir === selectedDirection ? 'direction-btn-active shadow-lg' : 'bg-white/70 hover:bg-teal-50 text-gray-700'}" data-dir="${dir}">${dir}</button>`
@@ -370,9 +392,13 @@
                 });
             }
 
-            function renderDoctorsByDirection(dir) { /* avvalgidek */ 
+            function renderDoctorsByDirection(dir) {
                 const filtered = doctors.filter(d => d.direction === dir);
                 const container = document.getElementById('doctorCards');
+                if (filtered.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">Bu yo'nalishda shifokor topilmadi</div>`;
+                    return;
+                }
                 container.innerHTML = filtered.map(d => {
                     const stars = Math.round(d.rating);
                     return `
@@ -399,15 +425,18 @@
                 });
             }
 
-            // YANGI: Navbat bo'limi render qilish
+            // Navbat bo'limi
             function renderQueueHospitals() {
                 const filtered = queueFilterDirection === 'barchasi' 
                     ? queueHospitals 
                     : queueHospitals.filter(h => h.availableDirections.includes(queueFilterDirection));
                 
                 const container = document.getElementById('queueHospitalsList');
+                if (filtered.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500">Bu yo'nalish bo'yicha shifoxona topilmadi</div>`;
+                    return;
+                }
                 container.innerHTML = filtered.map(h => {
-                    // Navbat holatiga qarab badge rangi
                     let badgeClass = 'queue-badge';
                     if (h.queueStatus === 'low') badgeClass = 'queue-badge-low';
                     if (h.queueStatus === 'medium') badgeClass = 'queue-badge-medium';
@@ -422,7 +451,6 @@
                         <p class="text-gray-600 flex items-center gap-2"><i class="fas fa-phone text-teal-500"></i>${h.phone}</p>
                         <p class="text-gray-600 flex items-center gap-2"><i class="far fa-clock text-teal-500"></i>${h.hours}</p>
                         
-                        <!-- Navbat ma'lumotlari -->
                         <div class="mt-4 bg-teal-50 p-3 rounded-xl">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-gray-700"><i class="fas fa-hourglass-half text-teal-600 mr-1"></i>Kutilayotgan vaqt:</span>
@@ -433,7 +461,6 @@
                             </div>
                         </div>
                         
-                        <!-- Mavjud shifokorlar -->
                         <div class="mt-3">
                             <p class="text-sm font-medium text-gray-600 mb-1"><i class="fas fa-user-md text-teal-500 mr-1"></i>Shifokorlar:</p>
                             <div class="flex flex-wrap gap-1">
@@ -441,19 +468,16 @@
                             </div>
                         </div>
                         
-                        <!-- Xizmatlar -->
                         <div class="flex flex-wrap gap-2 mt-3">
                             ${h.services.map(s => `<span class="bg-gradient-to-r from-teal-50 to-cyan-50 text-teal-700 px-3 py-1.5 rounded-full text-xs font-medium border border-teal-200">${s}</span>`).join('')}
                         </div>
                         
-                        <!-- Navbatga olish tugmasi -->
                         <button class="queue-btn mt-4 w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-medium transition flex items-center justify-center gap-2" data-hospital='${JSON.stringify(h)}'>
                             <i class="fas fa-clock"></i> Navbatga yozilish
                         </button>
                     </div>
                 `}).join('');
 
-                // Navbat tugmalariga event listener
                 document.querySelectorAll('.queue-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const hospital = JSON.parse(e.target.dataset.hospital);
@@ -462,7 +486,6 @@
                 });
             }
 
-            // Navbatga yozilganlik haqida xabar
             function showQueueSuccess(hospitalName) {
                 const toast = document.getElementById('queueSuccessToast');
                 const msg = document.getElementById('toastMessage');
@@ -473,7 +496,7 @@
                 }, 3000);
             }
 
-            // Qolgan render funksiyalar (qisqa)
+            // Dorilar
             function renderMedicines() {
                 const container = document.getElementById('medicinesList');
                 container.innerHTML = medicines.map(m => `
@@ -486,20 +509,228 @@
                 `).join('');
             }
 
-            function renderReelsFilter() { /* avvalgidek */ }
-            function renderReels() { /* avvalgidek */ }
-            function updateNearestHospitals() { /* avvalgidek */ }
-            function getUserLocation() { /* avvalgidek */ }
+            // Reels filter
+            function renderReelsFilter() {
+                const uniqueDirs = [...new Set(reels.map(r => r.direction))];
+                const filterContainer = document.getElementById('reelsDirectionFilter');
+                filterContainer.innerHTML = `<button data-reel-direction="barchasi" class="reel-filter-btn px-5 py-2 rounded-full bg-white border border-teal-200 text-teal-700 hover:bg-teal-50 transition shadow-sm">Barchasi</button>`;
+                uniqueDirs.forEach(dir => {
+                    const btn = document.createElement('button');
+                    btn.dataset.reelDirection = dir;
+                    btn.className = `reel-filter-btn px-5 py-2 rounded-full bg-white border border-teal-200 text-teal-700 hover:bg-teal-50 transition shadow-sm`;
+                    btn.textContent = dir;
+                    filterContainer.appendChild(btn);
+                });
+                document.querySelectorAll('.reel-filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.reel-filter-btn').forEach(b => b.classList.remove('active-reel-filter', 'bg-teal-600', 'text-white'));
+                        e.target.classList.add('active-reel-filter', 'bg-teal-600', 'text-white');
+                        currentReelDirection = e.target.dataset.reelDirection;
+                        renderReels();
+                    });
+                });
+                document.querySelector('[data-reel-direction="barchasi"]').classList.add('active-reel-filter', 'bg-teal-600', 'text-white');
+            }
 
-            // ---------- SUN'IY INTELLEKT JAVOB ----------
-            function generateAIResponse(doctor, userMessage) { /* avvalgidek */ }
+            // Reels
+            function renderReels() {
+                const filtered = currentReelDirection === 'barchasi' ? reels : reels.filter(r => r.direction === currentReelDirection);
+                const container = document.getElementById('reelsContainer');
+                if (filtered.length === 0) {
+                    container.innerHTML = `<div class="text-center py-10 text-gray-500">Bu yo'nalishda reels topilmadi</div>`;
+                    return;
+                }
+                container.innerHTML = filtered.map((r, idx) => `
+                    <div class="reels-item w-full bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer border border-gray-200" data-reel='${JSON.stringify(r)}'>
+                        <img src="${r.cover}" class="w-full h-96 object-cover" alt="reels cover">
+                        <div class="p-4 flex items-center gap-3">
+                            <i class="fas fa-user-circle text-4xl text-teal-500"></i>
+                            <div class="flex-1">
+                                <p class="font-semibold text-gray-800">${r.name}</p>
+                                <p class="text-sm text-gray-500">${r.title}</p>
+                                <span class="inline-block mt-1 bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full text-xs">${r.direction}</span>
+                            </div>
+                            <div class="flex gap-3 text-sm text-gray-600">
+                                <span><i class="far fa-eye"></i> ${r.views}</span>
+                                <span><i class="far fa-heart text-red-400"></i> ${r.likes}</span>
+                                <span><i class="far fa-comment"></i> ${r.comments}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                document.querySelectorAll('[data-reel]').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const reel = JSON.parse(el.dataset.reel);
+                        openReelFull(reel);
+                    });
+                });
+            }
+
+            // Geolocation va eng yaqin shifoxonalar
+            function distance(lat1, lon1, lat2, lon2) {
+                const R = 6371;
+                const dLat = (lat2-lat1)*Math.PI/180;
+                const dLon = (lon2-lon1)*Math.PI/180;
+                const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+                const c = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                return R*c;
+            }
+
+            function updateNearestHospitals() {
+                const status = document.getElementById('locationStatus');
+                if (!currentUserPos) { 
+                    status.innerText = "Joylashuv aniqlanmadi"; 
+                    return; 
+                }
+                status.innerText = `Sizning joylashuvingiz: ${currentUserPos.lat.toFixed(3)}, ${currentUserPos.lon.toFixed(3)}`;
+
+                const withDist = nearbyHospitals.map(h => {
+                    const dist = distance(currentUserPos.lat, currentUserPos.lon, h.lat, h.lon);
+                    return { ...h, dist: Math.round(dist * 10) / 10 };
+                }).sort((a,b) => a.dist - b.dist).slice(0, 4);
+
+                const container = document.getElementById('nearestHospitals');
+                container.innerHTML = withDist.map(h => `
+                    <div class="bg-white rounded-2xl shadow-lg p-5 border border-teal-100">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-lg text-teal-700">${h.name}</h3>
+                            <span class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-3 py-1 rounded-full text-sm shadow">${h.dist} km</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2"><i class="fas fa-map-pin text-teal-500 w-5"></i> ${h.address}</p>
+                        <p class="text-sm text-gray-600"><i class="fas fa-phone text-teal-500 w-5"></i> ${h.phone}</p>
+                        <details class="mt-3 text-sm">
+                            <summary class="cursor-pointer text-teal-600 font-medium">Shifokorlar ro'yxati</summary>
+                            <ul class="list-disc pl-5 mt-2 text-gray-600">${h.doctors.map(d => `<li>${d}</li>`).join('')}</ul>
+                        </details>
+                        <div class="flex flex-wrap gap-1 mt-3">${h.services.map(s => `<span class="bg-teal-50 border border-teal-200 px-3 py-1 rounded-full text-xs">${s}</span>`).join('')}</div>
+                    </div>
+                `).join('');
+            }
+
+            function getUserLocation() {
+                document.getElementById('locationStatus').innerHTML = "<i class='fas fa-spinner fa-spin mr-2'></i>Aniqlanmoqda...";
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        currentUserPos = { lat: pos.coords.latitude, lon: pos.coords.longitude };
+                        updateNearestHospitals();
+                    }, err => {
+                        document.getElementById('locationStatus').innerText = "Joylashuvga ruxsat berilmadi, taxminiy ma'lumot ko'rsatilmoqda.";
+                        updateNearestHospitals();
+                    });
+                } else {
+                    document.getElementById('locationStatus').innerText = "Geolokatsiya qo'llab-quvvatlanmaydi";
+                    updateNearestHospitals();
+                }
+            }
+
+            // ---------- SUN'IY INTELLEKT JAVOB FUNKSIYASI ----------
+            function generateAIResponse(doctor, userMessage) {
+                const msg = userMessage.toLowerCase();
+                if (msg.includes('salom') || msg.includes('assalom') || msg.includes('hayrli')) {
+                    return `Va alaykum assalom! Men doktor ${doctor.name}. Qanday yordam kerak?`;
+                }
+                if (msg.includes('rahmat') || msg.includes('thanks')) {
+                    return "Arzimaydi. Sog'lig'ingizni asrang! Yana savol bo'lsa, yozing.";
+                }
+                if (doctor.direction === 'Kardiolog') {
+                    if (msg.includes('yurak') || msg.includes('qon bosim') || msg.includes('bosim')) 
+                        return "Yurak urishi yoki qon bosim bilan bog'liq muammolaringiz bormi? Aniqroq ayting, maslahat beraman.";
+                    return "Kardiolog sifatida maslahat: yurak sog'ligi uchun muntazam tekshiruvdan o'ting va sog'lom ovqatlaning.";
+                }
+                if (doctor.direction === 'Pediatr') {
+                    if (msg.includes('bola') || msg.includes('farzand') || msg.includes('chaqaloq')) 
+                        return "Farzandingiz necha yoshda? Qanday alomatlar kuzatilmoqda?";
+                    return "Pediatr sifatida bolalar salomatligi haqida maslahat bera olaman. Farzandingizning yoshini ayting.";
+                }
+                if (doctor.direction === 'Nevrolog') {
+                    if (msg.includes('bosh og\'riq') || msg.includes('bosh aylanishi')) 
+                        return "Bosh og'rig'i sabablari turlicha. Qancha vaqtdan beri kuzatyapsiz?";
+                    return "Nevrologik masalalarda yordam berishga tayyorman. Shikoyatingizni batafsil yozing.";
+                }
+                if (doctor.direction === 'Ginekolog') {
+                    return "Ayollar salomatligi bo'yicha savollaringizni yozing. Maxfiylik kafolatlanadi.";
+                }
+                return "Tushundim. Iltimos, batafsilroq ma'lumot bering, men yordam beraman.";
+            }
 
             // ---------- CHAT MODALNI OCHISH ----------
-            function openChatModal(doctor) { /* avvalgidek */ }
-            function renderChatMessages(docId, container) { /* avvalgidek */ }
-            function openClinicDetail(clinic) { /* avvalgidek */ }
-            function openReelFull(reel) { /* avvalgidek */ }
-            function closeModal() { /* avvalgidek */ }
+            function openChatModal(doctor) {
+                currentChatDoctor = doctor;
+                const template = document.getElementById('chatModalTemplate').content.cloneNode(true);
+                const nameEl = template.getElementById('chatDoctorName');
+                nameEl.innerText = doctor.name;
+
+                const msgContainer = template.getElementById('chatMessages');
+                if (!chatMessages[doctor.id]) {
+                    chatMessages[doctor.id] = [
+                        { text: `Assalomu alaykum, men doktor ${doctor.name}. Qanday yordam kerak?`, sent: false, time: new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'}) }
+                    ];
+                }
+                renderChatMessages(doctor.id, msgContainer);
+
+                const videoBtn = template.getElementById('startVideoCallBtn');
+                const videoContainer = template.getElementById('videoCallContainer');
+
+                videoBtn.addEventListener('click', () => {
+                    videoContainer.classList.toggle('hidden');
+                });
+
+                const input = template.getElementById('chatInput');
+                const sendBtn = template.getElementById('sendChatBtn');
+
+                sendBtn.addEventListener('click', () => {
+                    const txt = input.value.trim();
+                    if (!txt) return;
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+                    chatMessages[doctor.id].push({ text: txt, sent: true, time: timeStr });
+                    renderChatMessages(doctor.id, msgContainer);
+                    input.value = '';
+
+                    setTimeout(() => {
+                        const aiResponse = generateAIResponse(doctor, txt);
+                        const aiTime = new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+                        chatMessages[doctor.id].push({ text: aiResponse, sent: false, time: aiTime });
+                        renderChatMessages(doctor.id, msgContainer);
+                    }, 1200);
+                });
+
+                template.querySelector('.closeModalBtn').addEventListener('click', closeModal);
+                document.getElementById('modalContent').innerHTML = '';
+                document.getElementById('modalContent').appendChild(template);
+                document.getElementById('modalOverlay').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('flex');
+            }
+
+            function renderChatMessages(docId, container) {
+                container.innerHTML = chatMessages[docId].map(m => `
+                    <div class="flex ${m.sent ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[75%] ${m.sent ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white' : 'bg-white text-gray-800'} rounded-2xl p-3 shadow-md">
+                            ${m.text}
+                            <div class="text-[10px] ${m.sent ? 'text-gray-100' : 'text-gray-500'} text-right mt-1">${m.time}</div>
+                        </div>
+                    </div>
+                `).join('');
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function openReelFull(reel) {
+                const t = document.getElementById('reelsFullTemplate').content.cloneNode(true);
+                t.getElementById('reelsFullImage').src = reel.cover;
+                t.getElementById('reelsFullLikes').innerText = reel.likes;
+                t.getElementById('reelsFullComments').innerText = reel.comments;
+                t.querySelector('.closeModalBtn').addEventListener('click', closeModal);
+                document.getElementById('modalContent').innerHTML = '';
+                document.getElementById('modalContent').appendChild(t);
+                document.getElementById('modalOverlay').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('flex');
+            }
+
+            function closeModal() {
+                document.getElementById('modalOverlay').classList.add('hidden');
+                document.getElementById('modalOverlay').classList.remove('flex');
+                document.getElementById('modalContent').innerHTML = '';
+            }
 
             // ---------- NAVIGATION ----------
             document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -507,14 +738,23 @@
                     const sectionId = e.target.dataset.section;
                     document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
                     document.getElementById(sectionId).classList.remove('hidden');
-                    if (sectionId === 'shifokorlar') { renderDirections(); renderDoctorsByDirection(selectedDirection); }
-                    if (sectionId === 'navbat') { 
-                        // Navbat bo'limi render qilish
-                        renderQueueHospitals();
+                    if (sectionId === 'shifokorlar') { 
+                        renderDirections(); 
+                        renderDoctorsByDirection(selectedDirection); 
                     }
-                    if (sectionId === 'dorilar') renderMedicines();
-                    if (sectionId === 'reels') { renderReelsFilter(); renderReels(); }
-                    if (sectionId === 'yaqin') getUserLocation();
+                    if (sectionId === 'navbat') { 
+                        renderQueueHospitals(); 
+                    }
+                    if (sectionId === 'dorilar') { 
+                        renderMedicines(); 
+                    }
+                    if (sectionId === 'reels') { 
+                        renderReelsFilter(); 
+                        renderReels(); 
+                    }
+                    if (sectionId === 'yaqin') { 
+                        getUserLocation(); 
+                    }
                 });
             });
 
@@ -530,8 +770,8 @@
             renderMedicines();
             renderReelsFilter();
             renderReels();
+            renderQueueHospitals();
             getUserLocation();
-            renderQueueHospitals(); // navbat bo'limi uchun
 
             document.getElementById('refreshGeo').addEventListener('click', getUserLocation);
             document.getElementById('modalOverlay').addEventListener('click', (e) => {
