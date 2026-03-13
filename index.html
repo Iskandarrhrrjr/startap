@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediTop – sog'liqni saqlash platformasi</title>
+    <title>MediTop – rasmsiz sog'liq platformasi</title>
     <!-- Tailwind + Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Custom stillar */
         .glass-nav {
             background: rgba(255,255,255,0.7);
             backdrop-filter: blur(10px);
@@ -41,12 +40,33 @@
             color: white;
             border-color: transparent;
         }
+        .video-call-container {
+            background: #1e293b;
+            border-radius: 1rem;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+        }
+        .call-avatar-icon {
+            font-size: 3rem;
+            color: #14b8a6;
+            background: #334155;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #14b8a6;
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 via-teal-50 to-cyan-50 font-sans antialiased">
+<body class="bg-lime-100 font-sans antialiased">
 
-    <!-- NAVBAR (glassmorphism) -->
-    <nav class="glass-nav sticky top-0 z-30">
+    <!-- NAVBAR -->
+    <nav class="glass-nav bg-lime-200 sticky top-0 z-30">
         <div class="container mx-auto px-4 flex flex-wrap items-center justify-between py-3">
             <div class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-cyan-600"><i class="fas fa-heartbeat mr-2 text-teal-600"></i>MediTop</div>
             <div class="flex flex-wrap gap-1 md:gap-3 text-sm md:text-base font-medium">
@@ -64,19 +84,17 @@
         <section id="shifokorlar" class="section active">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-user-md text-teal-600 text-2xl"></i></span> Shifokorlar</h2>
             <div class="flex flex-col md:flex-row gap-6">
-                <!-- Yo'nalishlar paneli (chap) -->
                 <div class="md:w-1/4 bg-white/70 backdrop-blur-sm p-5 rounded-2xl shadow-lg border border-white/50 h-fit">
                     <h3 class="font-semibold text-lg mb-4 text-teal-800"><i class="fas fa-list-ul mr-2"></i>Yo'nalishlar</h3>
                     <div id="directionList" class="flex flex-wrap md:flex-col gap-2"></div>
                 </div>
-                <!-- Shifokorlar ro'yxati (o'ng) -->
                 <div class="md:w-3/4">
                     <div id="doctorCards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Klinikalar bo'limi -->
+        <!-- Klinikalar -->
         <section id="klinikalar" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-hospital text-teal-600 text-2xl"></i></span> Klinikalar</h2>
             <div id="clinicList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
@@ -93,20 +111,16 @@
             <div id="nearestHospitals" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
         </section>
 
-        <!-- Dorilar bo'limi (rasm qo'shilgan) -->
+        <!-- Dorilar (rasmlar olib tashlandi) -->
         <section id="dorilar" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-pills text-teal-600 text-2xl"></i></span> Dorilar</h2>
             <div id="medicinesList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
         </section>
 
-        <!-- Reels bo'limi (yo'nalish filter bilan) -->
+        <!-- Reels -->
         <section id="reels" class="section hidden">
             <h2 class="text-3xl font-extrabold mb-6 text-gray-800 flex items-center"><span class="bg-teal-100 p-2 rounded-xl mr-3"><i class="fas fa-film text-teal-600 text-2xl"></i></span> Reels</h2>
-            <!-- Yo'nalish filter tugmalari -->
-            <div class="flex flex-wrap gap-2 mb-6" id="reelsDirectionFilter">
-                <button data-reel-direction="barchasi" class="reel-filter-btn px-5 py-2 rounded-full bg-white border border-teal-200 text-teal-700 hover:bg-teal-50 transition shadow-sm active-reel-filter">Barchasi</button>
-                <!-- Qolganlari js orqali qo'shiladi -->
-            </div>
+            <div class="flex flex-wrap gap-2 mb-6" id="reelsDirectionFilter"></div>
             <div id="reelsContainer" class="flex flex-col items-center gap-5 max-w-md mx-auto reels-scroll h-[70vh] overflow-y-auto p-2"></div>
         </section>
     </main>
@@ -116,18 +130,40 @@
         <div id="modalContent" class="bg-white/95 backdrop-blur-md rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl border border-white/30"></div>
     </div>
 
-    <!-- TEMPLATES (avvalgidek) -->
+    <!-- CHAT MODAL TEMPLATE (rasmlar olib tashlandi, ikonkalar qo'shildi) -->
     <template id="chatModalTemplate">
-        <div class="flex flex-col h-[80vh] rounded-3xl overflow-hidden">
-            <div class="flex items-center gap-3 p-4 border-b sticky top-0 bg-gradient-to-r from-teal-500 to-cyan-500 text-white">
-                <img class="w-10 h-10 rounded-full object-cover border-2 border-white" id="chatAvatar" src="" alt="avatar">
+        <div class="flex flex-col h-[80vh] rounded-3xl overflow-hidden relative">
+            <!-- Header -->
+            <div class="flex items-center gap-3 p-4 border-b sticky top-0 bg-gradient-to-r from-teal-500 to-cyan-500 text-white z-10">
+                <!-- Avatar o'rniga ikonka -->
+                <i class="fas fa-user-circle text-4xl text-white"></i>
                 <div>
                     <h3 id="chatDoctorName" class="font-semibold"></h3>
                     <p class="text-xs text-green-100"><i class="fas fa-circle text-[8px] text-green-300 mr-1 align-middle"></i>online</p>
                 </div>
-                <button class="ml-auto text-2xl closeModalBtn hover:bg-white/20 w-8 h-8 rounded-full">&times;</button>
+                <div class="ml-auto flex gap-2">
+                    <button id="startVideoCallBtn" class="bg-white/20 hover:bg-white/30 p-2 rounded-full"><i class="fas fa-video"></i></button>
+                    <button class="closeModalBtn text-2xl hover:bg-white/20 w-8 h-8 rounded-full">&times;</button>
+                </div>
             </div>
+            <!-- Video call container (rasmlar o'rniga ikonkalar) -->
+            <div id="videoCallContainer" class="hidden p-3 bg-slate-800 video-call-container">
+                <div class="flex flex-col items-center">
+                    <div class="call-avatar-icon"><i class="fas fa-user-md"></i></div>
+                    <span class="text-sm font-medium mt-1">Doktor</span>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-phone-alt text-green-400 text-xl"></i>
+                    <p class="call-status">Qo'ng'iroq davom etmoqda...</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="call-avatar-icon"><i class="fas fa-user"></i></div>
+                    <span class="text-sm font-medium mt-1">Siz</span>
+                </div>
+            </div>
+            <!-- Xabarlar maydoni -->
             <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-100"></div>
+            <!-- Xabar yozish -->
             <div class="p-3 border-t flex gap-2 bg-white">
                 <input type="text" id="chatInput" placeholder="Xabar yozing..." class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-300">
                 <button id="sendChatBtn" class="bg-gradient-to-r from-teal-500 to-cyan-500 text-white p-3 rounded-full w-12 h-12 flex items-center justify-center shadow-md hover:shadow-lg transition"><i class="fas fa-paper-plane"></i></button>
@@ -135,6 +171,7 @@
         </div>
     </template>
 
+    <!-- Qolgan templatlar (clinicDetail, reelsFull) -->
     <template id="clinicDetailTemplate">
         <div class="p-6 relative">
             <button class="absolute top-4 right-4 text-2xl closeModalBtn text-gray-500 hover:text-gray-800">&times;</button>
@@ -142,17 +179,14 @@
             <p class="mb-2"><i class="fas fa-map-pin w-6 text-teal-600"></i> <span id="clinicDetailAddress" class="text-gray-700"></span></p>
             <p class="mb-2"><i class="fas fa-phone w-6 text-teal-600"></i> <span id="clinicDetailPhone" class="text-gray-700"></span></p>
             <p class="mb-4"><i class="fas fa-clock w-6 text-teal-600"></i> <span id="clinicDetailHours" class="text-gray-700"></span></p>
-            <div class="mt-4">
-                <h4 class="font-semibold mb-2 text-teal-700">Xizmatlar:</h4>
-                <div id="clinicDetailServices" class="flex flex-wrap gap-2"></div>
-            </div>
+            <div class="mt-4"><h4 class="font-semibold mb-2 text-teal-700">Xizmatlar:</h4><div id="clinicDetailServices" class="flex flex-wrap gap-2"></div></div>
         </div>
     </template>
 
     <template id="reelsFullTemplate">
         <div class="relative bg-black text-white rounded-3xl overflow-hidden">
             <button class="absolute top-4 right-4 text-white text-3xl z-10 closeModalBtn hover:bg-white/20 w-10 h-10 rounded-full flex items-center justify-center">&times;</button>
-            <img id="reelsFullImage" src="" alt="reels" class="w-full max-h-[70vh] object-contain">
+            <img id="reelsFullImage" src="" alt="reels cover" class="w-full max-h-[70vh] object-contain">
             <div class="p-5 flex gap-8 text-xl bg-gradient-to-t from-black/80 to-transparent">
                 <span><i class="far fa-heart hover:text-red-400 cursor-pointer"></i> <span id="reelsFullLikes"></span></span>
                 <span><i class="far fa-comment"></i> <span id="reelsFullComments"></span></span>
@@ -163,90 +197,82 @@
 
     <script>
         (function() {
-            // ---------- MOCK MA'LUMOTLAR (dori rasmlari va reels yo'nalishlari bilan) ----------
-            const directions = [
-                "LOR", "Kardiolog", "Nevrolog", "Pediatr", "Ortoped", 
-                "Ginekolog", "Dermatolog", "Oftalmolog", "Endokrinolog", "Urolog",
-                "Onkolog", "Psixiatr", "Stomatolog", "Fizioterapevt", "Nefrolog"
+            // ---------- MOCK MA'LUMOTLAR (rasmlar olib tashlandi) ----------
+            const directions = ["LOR","Kardiolog","Nevrolog","Pediatr","Ortoped","Ginekolog","Dermatolog","Oftalmolog","Endokrinolog","Urolog","Onkolog","Psixiatr","Stomatolog","Fizioterapevt","Nefrolog"];
+
+            const doctors = [
+                { id:1, name:"Akmal Karimov", direction:"Kardiolog", exp:12, clinic:"Shifo Med", phone:"+99890 123-45-67", online:true, rating:4.8 },
+                { id:2, name:"Nodira Abdullayeva", direction:"Pediatr", exp:8, clinic:"Pediatriya markazi", phone:"+99891 234-56-78", online:false, rating:4.5 },
+                { id:3, name:"Jasur Tursunov", direction:"Nevrolog", exp:15, clinic:"Neyro klinik", phone:"+99893 345-67-89", online:true, rating:4.9 },
+                { id:4, name:"Gulnoza Rahimova", direction:"Ginekolog", exp:10, clinic:"Ayol salomatligi", phone:"+99899 456-78-90", online:true, rating:4.7 },
+                { id:5, name:"Bobur Shodiyev", direction:"Ortoped", exp:7, clinic:"Ortopediya servis", phone:"+99890 567-89-01", online:false, rating:4.2 },
+                { id:6, name:"Dilnoza Xamrayeva", direction:"Dermatolog", exp:9, clinic:"Dermacentr", phone:"+99891 678-90-12", online:true, rating:4.6 },
+                { id:7, name:"Sardor Alimov", direction:"LOR", exp:6, clinic:"LOR klinikasi", phone:"+99893 789-01-23", online:false, rating:4.3 },
+                { id:8, name:"Malika Jo'rayeva", direction:"Oftalmolog", exp:11, clinic:"Ko'z nuri", phone:"+99899 890-12-34", online:true, rating:4.9 },
+                { id:9, name:"Rustam Qodirov", direction:"Endokrinolog", exp:14, clinic:"Endomed", phone:"+99890 111-22-33", online:true, rating:4.4 },
+                { id:10, name:"Zulfiya Hakimova", direction:"Urolog", exp:5, clinic:"Uro klinik", phone:"+99891 222-33-44", online:false, rating:4.1 },
+                { id:11, name:"Bekzod To'xtayev", direction:"Onkolog", exp:18, clinic:"Onko markaz", phone:"+99893 333-44-55", online:true, rating:4.9 },
+                { id:12, name:"Lola Murodova", direction:"Psixiatr", exp:13, clinic:"Ruhiy salomatlik", phone:"+99899 444-55-66", online:true, rating:4.7 },
+                { id:13, name:"Jahongir Hamidov", direction:"Stomatolog", exp:9, clinic:"Dent Lux", phone:"+99890 555-66-77", online:false, rating:4.5 },
+                { id:14, name:"Feruza Ismoilova", direction:"Fizioterapevt", exp:6, clinic:"Fizio clinic", phone:"+99891 666-77-88", online:true, rating:4.2 },
+                { id:15, name:"Otabek Nazarov", direction:"Nefrolog", exp:10, clinic:"Nefro servis", phone:"+99893 777-88-99", online:true, rating:4.6 },
+                { id:16, name:"Shahlo Aminova", direction:"Kardiolog", exp:7, clinic:"Heart care", phone:"+99899 888-99-00", online:false, rating:4.3 },
+                { id:17, name:"Aziz Raxmatov", direction:"Nevrolog", exp:12, clinic:"Neyro plus", phone:"+99890 999-00-11", online:true, rating:4.8 },
+                { id:18, name:"Dildora Ergasheva", direction:"Pediatr", exp:5, clinic:"Bolajon shifoxonasi", phone:"+99891 000-11-22", online:true, rating:4.4 },
+                { id:19, name:"Sherzod Komilov", direction:"Ortoped", exp:16, clinic:"Ortopediya master", phone:"+99893 112-23-34", online:false, rating:4.7 },
+                { id:20, name:"Gulchehra Sodiqova", direction:"Ginekolog", exp:14, clinic:"Ayol dunyosi", phone:"+99899 223-34-45", online:true, rating:4.9 },
+                { id:21, name:"Ulug'bek Xolmatov", direction:"Dermatolog", exp:8, clinic:"Derma life", phone:"+99890 334-45-56", online:true, rating:4.2 },
+                { id:22, name:"Ma'mura Abdusalomova", direction:"Oftalmolog", exp:11, clinic:"Ko'z guzali", phone:"+99891 445-56-67", online:false, rating:4.5 },
+                { id:23, name:"Alisher Yo'ldoshev", direction:"Endokrinolog", exp:9, clinic:"Endo health", phone:"+99893 556-67-78", online:true, rating:4.6 },
+                { id:24, name:"Zebunisso Rahmonova", direction:"Urolog", exp:7, clinic:"Uro help", phone:"+99899 667-78-89", online:true, rating:4.3 },
+                { id:25, name:"Farrukh Ruziyev", direction:"Onkolog", exp:20, clinic:"Onko clinic", phone:"+99890 778-89-90", online:false, rating:5.0 },
+                { id:26, name:"Barno Safarova", direction:"Psixiatr", exp:6, clinic:"Psyche center", phone:"+99891 889-90-01", online:true, rating:4.1 },
+                { id:27, name:"Murodjon Ahmedov", direction:"Stomatolog", exp:10, clinic:"Dental style", phone:"+99893 990-01-12", online:true, rating:4.7 },
+                { id:28, name:"Nozima Abduqahhorova", direction:"Fizioterapevt", exp:4, clinic:"Reabilitatsiya", phone:"+99899 101-12-23", online:false, rating:4.0 },
+                { id:29, name:"Akbarali Tojiboyev", direction:"Nefrolog", exp:13, clinic:"Nefro care", phone:"+99890 212-23-34", online:true, rating:4.6 },
+                { id:30, name:"Saida Karimova", direction:"LOR", exp:5, clinic:"Ent clinic", phone:"+99891 323-34-45", online:true, rating:4.3 }
             ];
 
-            const doctors = [ /* (30 ta shifokor, avvalgidek) */ 
-                { id: 1, name: "Akmal Karimov", direction: "Kardiolog", exp: 12, clinic: "Shifo Med", phone: "+99890 123-45-67", avatar: "https://randomuser.me/api/portraits/men/1.jpg", online: true, rating: 4.8 },
-                { id: 2, name: "Nodira Abdullayeva", direction: "Pediatr", exp: 8, clinic: "Pediatriya markazi", phone: "+99891 234-56-78", avatar: "https://randomuser.me/api/portraits/women/2.jpg", online: false, rating: 4.5 },
-                { id: 3, name: "Jasur Tursunov", direction: "Nevrolog", exp: 15, clinic: "Neyro klinik", phone: "+99893 345-67-89", avatar: "https://randomuser.me/api/portraits/men/3.jpg", online: true, rating: 4.9 },
-                { id: 4, name: "Gulnoza Rahimova", direction: "Ginekolog", exp: 10, clinic: "Ayol salomatligi", phone: "+99899 456-78-90", avatar: "https://randomuser.me/api/portraits/women/4.jpg", online: true, rating: 4.7 },
-                { id: 5, name: "Bobur Shodiyev", direction: "Ortoped", exp: 7, clinic: "Ortopediya servis", phone: "+99890 567-89-01", avatar: "https://randomuser.me/api/portraits/men/5.jpg", online: false, rating: 4.2 },
-                { id: 6, name: "Dilnoza Xamrayeva", direction: "Dermatolog", exp: 9, clinic: "Dermacentr", phone: "+99891 678-90-12", avatar: "https://randomuser.me/api/portraits/women/6.jpg", online: true, rating: 4.6 },
-                { id: 7, name: "Sardor Alimov", direction: "LOR", exp: 6, clinic: "LOR klinikasi", phone: "+99893 789-01-23", avatar: "https://randomuser.me/api/portraits/men/7.jpg", online: false, rating: 4.3 },
-                { id: 8, name: "Malika Jo'rayeva", direction: "Oftalmolog", exp: 11, clinic: "Ko'z nuri", phone: "+99899 890-12-34", avatar: "https://randomuser.me/api/portraits/women/8.jpg", online: true, rating: 4.9 },
-                { id: 9, name: "Rustam Qodirov", direction: "Endokrinolog", exp: 14, clinic: "Endomed", phone: "+99890 111-22-33", avatar: "https://randomuser.me/api/portraits/men/9.jpg", online: true, rating: 4.4 },
-                { id: 10, name: "Zulfiya Hakimova", direction: "Urolog", exp: 5, clinic: "Uro klinik", phone: "+99891 222-33-44", avatar: "https://randomuser.me/api/portraits/women/10.jpg", online: false, rating: 4.1 },
-                { id: 11, name: "Bekzod To'xtayev", direction: "Onkolog", exp: 18, clinic: "Onko markaz", phone: "+99893 333-44-55", avatar: "https://randomuser.me/api/portraits/men/11.jpg", online: true, rating: 4.9 },
-                { id: 12, name: "Lola Murodova", direction: "Psixiatr", exp: 13, clinic: "Ruhiy salomatlik", phone: "+99899 444-55-66", avatar: "https://randomuser.me/api/portraits/women/12.jpg", online: true, rating: 4.7 },
-                { id: 13, name: "Jahongir Hamidov", direction: "Stomatolog", exp: 9, clinic: "Dent Lux", phone: "+99890 555-66-77", avatar: "https://randomuser.me/api/portraits/men/13.jpg", online: false, rating: 4.5 },
-                { id: 14, name: "Feruza Ismoilova", direction: "Fizioterapevt", exp: 6, clinic: "Fizio clinic", phone: "+99891 666-77-88", avatar: "https://randomuser.me/api/portraits/women/14.jpg", online: true, rating: 4.2 },
-                { id: 15, name: "Otabek Nazarov", direction: "Nefrolog", exp: 10, clinic: "Nefro servis", phone: "+99893 777-88-99", avatar: "https://randomuser.me/api/portraits/men/15.jpg", online: true, rating: 4.6 },
-                { id: 16, name: "Shahlo Aminova", direction: "Kardiolog", exp: 7, clinic: "Heart care", phone: "+99899 888-99-00", avatar: "https://randomuser.me/api/portraits/women/16.jpg", online: false, rating: 4.3 },
-                { id: 17, name: "Aziz Raxmatov", direction: "Nevrolog", exp: 12, clinic: "Neyro plus", phone: "+99890 999-00-11", avatar: "https://randomuser.me/api/portraits/men/17.jpg", online: true, rating: 4.8 },
-                { id: 18, name: "Dildora Ergasheva", direction: "Pediatr", exp: 5, clinic: "Bolajon shifoxonasi", phone: "+99891 000-11-22", avatar: "https://randomuser.me/api/portraits/women/18.jpg", online: true, rating: 4.4 },
-                { id: 19, name: "Sherzod Komilov", direction: "Ortoped", exp: 16, clinic: "Ortopediya master", phone: "+99893 112-23-34", avatar: "https://randomuser.me/api/portraits/men/19.jpg", online: false, rating: 4.7 },
-                { id: 20, name: "Gulchehra Sodiqova", direction: "Ginekolog", exp: 14, clinic: "Ayol dunyosi", phone: "+99899 223-34-45", avatar: "https://randomuser.me/api/portraits/women/20.jpg", online: true, rating: 4.9 },
-                { id: 21, name: "Ulug'bek Xolmatov", direction: "Dermatolog", exp: 8, clinic: "Derma life", phone: "+99890 334-45-56", avatar: "https://randomuser.me/api/portraits/men/21.jpg", online: true, rating: 4.2 },
-                { id: 22, name: "Ma'mura Abdusalomova", direction: "Oftalmolog", exp: 11, clinic: "Ko'z guzali", phone: "+99891 445-56-67", avatar: "https://randomuser.me/api/portraits/women/22.jpg", online: false, rating: 4.5 },
-                { id: 23, name: "Alisher Yo'ldoshev", direction: "Endokrinolog", exp: 9, clinic: "Endo health", phone: "+99893 556-67-78", avatar: "https://randomuser.me/api/portraits/men/23.jpg", online: true, rating: 4.6 },
-                { id: 24, name: "Zebunisso Rahmonova", direction: "Urolog", exp: 7, clinic: "Uro help", phone: "+99899 667-78-89", avatar: "https://randomuser.me/api/portraits/women/24.jpg", online: true, rating: 4.3 },
-                { id: 25, name: "Farrukh Ruziyev", direction: "Onkolog", exp: 20, clinic: "Onko clinic", phone: "+99890 778-89-90", avatar: "https://randomuser.me/api/portraits/men/25.jpg", online: false, rating: 5.0 },
-                { id: 26, name: "Barno Safarova", direction: "Psixiatr", exp: 6, clinic: "Psyche center", phone: "+99891 889-90-01", avatar: "https://randomuser.me/api/portraits/women/26.jpg", online: true, rating: 4.1 },
-                { id: 27, name: "Murodjon Ahmedov", direction: "Stomatolog", exp: 10, clinic: "Dental style", phone: "+99893 990-01-12", avatar: "https://randomuser.me/api/portraits/men/27.jpg", online: true, rating: 4.7 },
-                { id: 28, name: "Nozima Abduqahhorova", direction: "Fizioterapevt", exp: 4, clinic: "Reabilitatsiya", phone: "+99899 101-12-23", avatar: "https://randomuser.me/api/portraits/women/28.jpg", online: false, rating: 4.0 },
-                { id: 29, name: "Akbarali Tojiboyev", direction: "Nefrolog", exp: 13, clinic: "Nefro care", phone: "+99890 212-23-34", avatar: "https://randomuser.me/api/portraits/men/29.jpg", online: true, rating: 4.6 },
-                { id: 30, name: "Saida Karimova", direction: "LOR", exp: 5, clinic: "Ent clinic", phone: "+99891 323-34-45", avatar: "https://randomuser.me/api/portraits/women/30.jpg", online: true, rating: 4.3 },
-            ];
-
-            const clinics = [ /* avvalgidek */ ];
-            clinics.push({ id: 1, name: "Shifo Med", address: "Toshkent, Chilonzor 12", phone: "+99871 212-45-67", hours: "08:00-20:00", services: ["Kardiologiya", "Nevrologiya", "Terapiya"] },
+            const clinics = [
+                { id: 1, name: "Shifo Med", address: "Toshkent, Chilonzor 12", phone: "+99871 212-45-67", hours: "08:00-20:00", services: ["Kardiologiya", "Nevrologiya", "Terapiya"] },
                 { id: 2, name: "Pediatriya markazi", address: "Toshkent, Yunusobod 4", phone: "+99871 234-56-78", hours: "09:00-18:00", services: ["Pediatriya", "Vaksinatsiya"] },
                 { id: 3, name: "Neyro klinik", address: "Toshkent, Mirzo Ulug'bek", phone: "+99871 345-67-89", hours: "10:00-19:00", services: ["Nevrologiya", "Psixiatriya"] },
                 { id: 4, name: "Ayol salomatligi", address: "Toshkent, Yakkasaroy", phone: "+99871 456-78-90", hours: "09:00-17:00", services: ["Ginekologiya", "Urologiya"] },
                 { id: 5, name: "Dent Lux", address: "Toshkent, Shayxontoxur", phone: "+99871 567-89-01", hours: "10:00-21:00", services: ["Stomatologiya", "Ortodontiya"] }
-            );
+            ];
 
-            const hospitals = [ /* avvalgidek */ ];
-            hospitals.push({ id: 1, name: "Respublika shifoxonasi", lat: 41.311, lon: 69.279, address: "Olmazor tumani", phone: "+99871 123-45-67", doctors: ["Akmal Karimov (Kardiolog)", "Dilnoza (Dermatolog)"], services: ["Kardiologiya", "Dermatologiya"] },
+            const hospitals = [
+                { id: 1, name: "Respublika shifoxonasi", lat: 41.311, lon: 69.279, address: "Olmazor tumani", phone: "+99871 123-45-67", doctors: ["Akmal Karimov (Kardiolog)", "Dilnoza (Dermatolog)"], services: ["Kardiologiya", "Dermatologiya"] },
                 { id: 2, name: "Shahar shoshilinch", lat: 41.328, lon: 69.235, address: "Chilonzor 5", phone: "+99871 234-56-78", doctors: ["Bobur Shodiyev (Ortoped)", "Nodira (Pediatr)"], services: ["Ortopediya", "Pediatriya"] },
                 { id: 3, name: "Markaziy klinika", lat: 41.299, lon: 69.245, address: "Yakkasaroy", phone: "+99871 345-67-89", doctors: ["Jasur (Nevrolog)", "Malika (Oftalmolog)"], services: ["Nevrologiya", "Oftalmologiya"] },
                 { id: 4, name: "Zangiota tibbiyot", lat: 41.351, lon: 69.201, address: "Zangiota", phone: "+99871 456-78-90", doctors: ["Gulnoza (Ginekolog)"], services: ["Ginekologiya"] },
                 { id: 5, name: "Shifo Med Complex", lat: 41.338, lon: 69.288, address: "Mirzo Ulug'bek", phone: "+99871 567-89-01", doctors: ["Rustam Qodirov (Endokrinolog)", "Zulfiya (Urolog)"], services: ["Endokrinologiya", "Urologiya"] }
-            );
-
-            // Dorilarga rasm qo'shildi
-            const medicines = [
-                { id: 1, name: "Paratsetamol", disease: "Isitma, bosh og'rig'i", desc: "Analgetik va antipiretik", price: "5000 so'm", image: "https://picsum.photos/id/107/200/200" },
-                { id: 2, name: "Amoksitsillin", disease: "Bakterial infeksiyalar", desc: "Antibiotik", price: "12000 so'm", image: "https://picsum.photos/id/108/200/200" },
-                { id: 3, name: "Loratadin", disease: "Allergiya", desc: "Antigistamin", price: "8000 so'm", image: "https://picsum.photos/id/109/200/200" },
-                { id: 4, name: "Ibuprofen", disease: "Revmatizm, og'riq", desc: "Yallig'lanishga qarshi", price: "7000 so'm", image: "https://picsum.photos/id/110/200/200" },
-                { id: 5, name: "Omeprazol", disease: "Oshqozon yarasi", desc: "Proton pompasi ingibitori", price: "15000 so'm", image: "https://picsum.photos/id/111/200/200" },
-                { id: 6, name: "Vitamin D3", disease: "Suyak mustahkamlash", desc: "Kalsiy bilan", price: "25000 so'm", image: "https://picsum.photos/id/112/200/200" },
-                { id: 7, name: "Analgin", disease: "Kuchli og'riq", desc: "Inyeksiya", price: "4000 so'm", image: "https://picsum.photos/id/113/200/200" },
             ];
 
-            // Reels ga yo'nalish qo'shildi
+            // Dorilar (rasmlar olib tashlandi)
+            const medicines = [
+                { id: 1, name: "Paratsetamol", disease: "Isitma, bosh og'rig'i", desc: "Analgetik va antipiretik", price: "5000 so'm" },
+                { id: 2, name: "Amoksitsillin", disease: "Bakterial infeksiyalar", desc: "Antibiotik", price: "12000 so'm" },
+                { id: 3, name: "Loratadin", disease: "Allergiya", desc: "Antigistamin", price: "8000 so'm" },
+                { id: 4, name: "Ibuprofen", disease: "Revmatizm, og'riq", desc: "Yallig'lanishga qarshi", price: "7000 so'm" },
+                { id: 5, name: "Omeprazol", disease: "Oshqozon yarasi", desc: "Proton pompasi ingibitori", price: "15000 so'm" },
+                { id: 6, name: "Vitamin D3", disease: "Suyak mustahkamlash", desc: "Kalsiy bilan", price: "25000 so'm" },
+                { id: 7, name: "Analgin", disease: "Kuchli og'riq", desc: "Inyeksiya", price: "4000 so'm" }
+            ];
+
+            // Reels (avatar rasmlari olib tashlandi, ikonka bilan ishlaymiz)
             const reels = [
-                { id: 1, cover: "https://picsum.photos/id/1015/300/500", avatar: "https://randomuser.me/api/portraits/men/1.jpg", name: "Akmal Karimov", title: "Yurak salomatligi", views: "12K", likes: 450, comments: 23, direction: "Kardiolog" },
-                { id: 2, cover: "https://picsum.photos/id/100/300/500", avatar: "https://randomuser.me/api/portraits/women/2.jpg", name: "Nodira Abdullayeva", title: "Bolalarda allergiya", views: "8K", likes: 210, comments: 12, direction: "Pediatr" },
-                { id: 3, cover: "https://picsum.photos/id/102/300/500", avatar: "https://randomuser.me/api/portraits/men/3.jpg", name: "Jasur Tursunov", title: "Bosh og'rig'i sabablari", views: "22K", likes: 800, comments: 40, direction: "Nevrolog" },
-                { id: 4, cover: "https://picsum.photos/id/104/300/500", avatar: "https://randomuser.me/api/portraits/women/4.jpg", name: "Gulnoza Rahimova", title: "Ayollar salomatligi", views: "15K", likes: 560, comments: 31, direction: "Ginekolog" },
-                { id: 5, cover: "https://picsum.photos/id/106/300/500", avatar: "https://randomuser.me/api/portraits/men/5.jpg", name: "Bobur Shodiyev", title: "Ortopediya maslahatlari", views: "9K", likes: 340, comments: 18, direction: "Ortoped" },
-                { id: 6, cover: "https://picsum.photos/id/108/300/500", avatar: "https://randomuser.me/api/portraits/women/6.jpg", name: "Dilnoza Xamrayeva", title: "Terini parvarishlash", views: "18K", likes: 720, comments: 44, direction: "Dermatolog" },
+                { id: 1, cover: "https://picsum.photos/id/1015/300/500", name: "Akmal Karimov", title: "Yurak salomatligi", views: "12K", likes: 450, comments: 23, direction: "Kardiolog" },
+                { id: 2, cover: "https://picsum.photos/id/100/300/500", name: "Nodira Abdullayeva", title: "Bolalarda allergiya", views: "8K", likes: 210, comments: 12, direction: "Pediatr" },
+                { id: 3, cover: "https://picsum.photos/id/102/300/500", name: "Jasur Tursunov", title: "Bosh og'rig'i sabablari", views: "22K", likes: 800, comments: 40, direction: "Nevrolog" },
+                { id: 4, cover: "https://picsum.photos/id/104/300/500", name: "Gulnoza Rahimova", title: "Ayollar salomatligi", views: "15K", likes: 560, comments: 31, direction: "Ginekolog" }
             ];
 
             // ---------- GLOBAL O'ZGARUVCHILAR ----------
-            let currentUserPos = { lat: 41.323, lon: 69.269 }; 
-            let selectedDirection = "Kardiolog"; 
+            let currentUserPos = { lat: 41.323, lon: 69.269 };
+            let selectedDirection = "Kardiolog";
+            let chatMessages = {};
             let currentChatDoctor = null;
-            let chatMessages = {}; 
-            let activeSection = 'shifokorlar';
-            let currentReelDirection = 'barchasi';
 
             // ---------- RENDER FUNKSIYALARI ----------
             function renderDirections() {
@@ -270,11 +296,11 @@
                     const stars = Math.round(d.rating);
                     return `
                     <div class="doctor-card bg-white rounded-2xl shadow-lg hover:shadow-2xl p-5 border border-teal-100 flex flex-col">
-                        <div class="relative">
-                            <img src="${d.avatar}" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-teal-200 shadow-md" alt="doctor">
-                            <span class="absolute bottom-0 right-1/2 translate-x-8 w-4 h-4 ${d.online ? 'bg-green-500' : 'bg-gray-400'} border-2 border-white rounded-full"></span>
+                        <!-- Avatar o'rniga ikonka -->
+                        <div class="flex justify-center mb-2">
+                            <i class="fas fa-user-md text-5xl text-teal-500 bg-teal-100 p-4 rounded-full"></i>
                         </div>
-                        <h4 class="font-bold text-center mt-3 text-gray-800">${d.name}</h4>
+                        <h4 class="font-bold text-center mt-2 text-gray-800">${d.name}</h4>
                         <p class="text-sm text-center text-teal-600 font-medium">${d.direction} • ${d.exp} yil</p>
                         <div class="star-rating flex justify-center my-1">
                             ${Array.from({ length: 5 }, (_, i) => `<i class="fas fa-star ${i < stars ? 'text-amber-400' : 'text-gray-300'} text-sm"></i>`).join('')}
@@ -316,7 +342,7 @@
                 const container = document.getElementById('medicinesList');
                 container.innerHTML = medicines.map(m => `
                     <div class="medicine-card bg-white rounded-2xl shadow-lg p-5 border border-amber-100 hover:shadow-xl transition">
-                        <img src="${m.image}" class="w-full h-32 object-cover rounded-xl mb-3" alt="${m.name}">
+                        <!-- Rasm butunlay olib tashlandi -->
                         <h3 class="font-bold text-lg text-gray-800">${m.name}</h3>
                         <p class="text-sm text-red-500 font-medium mt-1">${m.disease}</p>
                         <p class="text-sm text-gray-600 mt-2">${m.desc}</p>
@@ -336,7 +362,6 @@
                     btn.textContent = dir;
                     filterContainer.appendChild(btn);
                 });
-                // active class
                 document.querySelectorAll('.reel-filter-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         document.querySelectorAll('.reel-filter-btn').forEach(b => b.classList.remove('active-reel-filter', 'bg-teal-600', 'text-white'));
@@ -345,10 +370,10 @@
                         renderReels();
                     });
                 });
-                // barchasi active by default
                 document.querySelector('[data-reel-direction="barchasi"]').classList.add('active-reel-filter', 'bg-teal-600', 'text-white');
             }
 
+            let currentReelDirection = 'barchasi';
             function renderReels() {
                 const filtered = currentReelDirection === 'barchasi' ? reels : reels.filter(r => r.direction === currentReelDirection);
                 const container = document.getElementById('reelsContainer');
@@ -356,7 +381,8 @@
                     <div class="reels-item w-full bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer border border-gray-200" data-reel='${JSON.stringify(r)}'>
                         <img src="${r.cover}" class="w-full h-96 object-cover" alt="reels cover">
                         <div class="p-4 flex items-center gap-3">
-                            <img src="${r.avatar}" class="w-10 h-10 rounded-full border-2 border-teal-300">
+                            <!-- Avatar o'rniga ikonka -->
+                            <i class="fas fa-user-circle text-4xl text-teal-500"></i>
                             <div class="flex-1">
                                 <p class="font-semibold text-gray-800">${r.name}</p>
                                 <p class="text-sm text-gray-500">${r.title}</p>
@@ -378,7 +404,7 @@
                 });
             }
 
-            // Geolocation (avvalgidek)
+            // Geolocation
             function distance(lat1, lon1, lat2, lon2) {
                 const R = 6371;
                 const dLat = (lat2-lat1)*Math.PI/180;
@@ -432,24 +458,61 @@
                 }
             }
 
-            // ---------- MODALLAR (avvalgidek) ----------
-            const overlay = document.getElementById('modalOverlay');
-            const modalContent = document.getElementById('modalContent');
+            // ---------- SUN'IY INTELLEKT JAVOB FUNKSIYASI ----------
+            function generateAIResponse(doctor, userMessage) {
+                const msg = userMessage.toLowerCase();
+                if (msg.includes('salom') || msg.includes('assalom') || msg.includes('hayrli')) {
+                    return `Va alaykum assalom! Men doktor ${doctor.name}. Qanday yordam kerak?`;
+                }
+                if (msg.includes('rahmat') || msg.includes('thanks')) {
+                    return "Arzimaydi. Sog'lig'ingizni asrang! Yana savol bo'lsa, yozing.";
+                }
+                if (doctor.direction === 'Kardiolog') {
+                    if (msg.includes('yurak') || msg.includes('qon bosim') || msg.includes('bosim')) 
+                        return "Yurak urishi yoki qon bosim bilan bog'liq muammolaringiz bormi? Aniqroq ayting, maslahat beraman.";
+                    return "Kardiolog sifatida maslahat: yurak sog'ligi uchun muntazam tekshiruvdan o'ting va sog'lom ovqatlaning.";
+                }
+                if (doctor.direction === 'Pediatr') {
+                    if (msg.includes('bola') || msg.includes('farzand') || msg.includes('chaqaloq')) 
+                        return "Farzandingiz necha yoshda? Qanday alomatlar kuzatilmoqda?";
+                    return "Pediatr sifatida bolalar salomatligi haqida maslahat bera olaman. Farzandingizning yoshini ayting.";
+                }
+                if (doctor.direction === 'Nevrolog') {
+                    if (msg.includes('bosh og\'riq') || msg.includes('bosh aylanishi')) 
+                        return "Bosh og'rig'i sabablari turlicha. Qancha vaqtdan beri kuzatyapsiz?";
+                    return "Nevrologik masalalarda yordam berishga tayyorman. Shikoyatingizni batafsil yozing.";
+                }
+                if (doctor.direction === 'Ginekolog') {
+                    return "Ayollar salomatligi bo'yicha savollaringizni yozing. Maxfiylik kafolatlanadi.";
+                }
+                return "Tushundim. Iltimos, batafsilroq ma'lumot bering, men yordam beraman.";
+            }
 
+            // ---------- CHAT MODALNI OCHISH ----------
             function openChatModal(doctor) {
                 currentChatDoctor = doctor;
                 const template = document.getElementById('chatModalTemplate').content.cloneNode(true);
-                template.getElementById('chatAvatar').src = doctor.avatar;
-                template.getElementById('chatDoctorName').innerText = doctor.name;
+                const nameEl = template.getElementById('chatDoctorName');
+                nameEl.innerText = doctor.name;
 
                 const msgContainer = template.getElementById('chatMessages');
-                if (!chatMessages[doctor.id]) chatMessages[doctor.id] = [
-                    { text: `Assalomu alaykum, men ${doctor.name}. Qanday yordam kerak?`, sent: false, time: new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'}) }
-                ];
+                if (!chatMessages[doctor.id]) {
+                    chatMessages[doctor.id] = [
+                        { text: `Assalomu alaykum, men doktor ${doctor.name}. Qanday yordam kerak?`, sent: false, time: new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'}) }
+                    ];
+                }
                 renderChatMessages(doctor.id, msgContainer);
+
+                const videoBtn = template.getElementById('startVideoCallBtn');
+                const videoContainer = template.getElementById('videoCallContainer');
+
+                videoBtn.addEventListener('click', () => {
+                    videoContainer.classList.toggle('hidden');
+                });
 
                 const input = template.getElementById('chatInput');
                 const sendBtn = template.getElementById('sendChatBtn');
+
                 sendBtn.addEventListener('click', () => {
                     const txt = input.value.trim();
                     if (!txt) return;
@@ -458,17 +521,20 @@
                     chatMessages[doctor.id].push({ text: txt, sent: true, time: timeStr });
                     renderChatMessages(doctor.id, msgContainer);
                     input.value = '';
+
                     setTimeout(() => {
-                        chatMessages[doctor.id].push({ text: "Rahmat, tez orada bog'lanamiz.", sent: false, time: new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'}) });
+                        const aiResponse = generateAIResponse(doctor, txt);
+                        const aiTime = new Date().toLocaleTimeString('uz-UZ', {hour:'2-digit', minute:'2-digit'});
+                        chatMessages[doctor.id].push({ text: aiResponse, sent: false, time: aiTime });
                         renderChatMessages(doctor.id, msgContainer);
-                    }, 1000);
+                    }, 1200);
                 });
 
                 template.querySelector('.closeModalBtn').addEventListener('click', closeModal);
-                modalContent.innerHTML = '';
-                modalContent.appendChild(template);
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+                document.getElementById('modalContent').innerHTML = '';
+                document.getElementById('modalContent').appendChild(template);
+                document.getElementById('modalOverlay').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('flex');
             }
 
             function renderChatMessages(docId, container) {
@@ -492,10 +558,10 @@
                 const servicesDiv = t.getElementById('clinicDetailServices');
                 servicesDiv.innerHTML = clinic.services.map(s => `<span class="bg-teal-100 px-4 py-2 rounded-full text-sm text-teal-700">${s}</span>`).join('');
                 t.querySelector('.closeModalBtn').addEventListener('click', closeModal);
-                modalContent.innerHTML = '';
-                modalContent.appendChild(t);
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+                document.getElementById('modalContent').innerHTML = '';
+                document.getElementById('modalContent').appendChild(t);
+                document.getElementById('modalOverlay').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('flex');
             }
 
             function openReelFull(reel) {
@@ -504,16 +570,16 @@
                 t.getElementById('reelsFullLikes').innerText = reel.likes;
                 t.getElementById('reelsFullComments').innerText = reel.comments;
                 t.querySelector('.closeModalBtn').addEventListener('click', closeModal);
-                modalContent.innerHTML = '';
-                modalContent.appendChild(t);
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+                document.getElementById('modalContent').innerHTML = '';
+                document.getElementById('modalContent').appendChild(t);
+                document.getElementById('modalOverlay').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('flex');
             }
 
             function closeModal() {
-                overlay.classList.add('hidden');
-                overlay.classList.remove('flex');
-                modalContent.innerHTML = '';
+                document.getElementById('modalOverlay').classList.add('hidden');
+                document.getElementById('modalOverlay').classList.remove('flex');
+                document.getElementById('modalContent').innerHTML = '';
             }
 
             // ---------- NAVIGATION ----------
@@ -522,22 +588,13 @@
                     const sectionId = e.target.dataset.section;
                     document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
                     document.getElementById(sectionId).classList.remove('hidden');
-                    activeSection = sectionId;
-                    if (sectionId === 'shifokorlar') {
-                        renderDirections();
-                        renderDoctorsByDirection(selectedDirection);
-                    }
+                    if (sectionId === 'shifokorlar') { renderDirections(); renderDoctorsByDirection(selectedDirection); }
                     if (sectionId === 'klinikalar') renderClinics();
                     if (sectionId === 'dorilar') renderMedicines();
-                    if (sectionId === 'reels') {
-                        renderReelsFilter();
-                        renderReels();
-                    }
+                    if (sectionId === 'reels') { renderReelsFilter(); renderReels(); }
                     if (sectionId === 'yaqin') getUserLocation();
                 });
             });
-
-            document.getElementById('refreshGeo').addEventListener('click', getUserLocation);
 
             // INIT
             renderDirections();
@@ -548,8 +605,9 @@
             renderReels();
             getUserLocation();
 
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeModal();
+            document.getElementById('refreshGeo').addEventListener('click', getUserLocation);
+            document.getElementById('modalOverlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modalOverlay')) closeModal();
             });
         })();
     </script>
